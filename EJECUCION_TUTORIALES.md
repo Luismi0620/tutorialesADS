@@ -1,4 +1,4 @@
-# Ejecución de los tutoriales 01, 02 y 03
+# Ejecución de los tutoriales 01 al 05
 
 Este proyecto se clonó en una carpeta nueva y se trabajó en la rama
 `tutoriales-completados`, partiendo del primer commit del repositorio para evitar las
@@ -90,8 +90,26 @@ Los logs quedan separados por tutorial:
    desde Docker.
 10. Se prepararon `scripts/aws_ec2_setup.sh` y `scripts/aws_ec2_deploy.sh` para
     ejecutar los comandos indicados por el tutorial en Amazon Linux 2023.
+11. Se desplegó la aplicación en una instancia Amazon Linux 2023 de AWS Academy.
+12. La API pública respondió `201 Created` desde el puerto 8000 y la evidencia se
+    guardó en `entregas/captura_tutorial04_aws.png`.
 
-La creación real de `Servidor-Django` en AWS Academy, la apertura del puerto 8000
-y la captura con la IP pública requieren que el laboratorio esté iniciado y exista
-una sesión autenticada en AWS Academy. No había navegador ni sesión AWS disponible
-durante esta ejecución.
+## Tutorial 05 - Nginx, Gunicorn y Strangler Pattern
+
+1. Se agregó Gunicorn a `requirements.txt` y al comando predeterminado de la
+   imagen Docker.
+2. Se creó `nginx/nginx.conf` con el upstream interno `web:8000`.
+3. Django dejó de publicar el puerto 8000 hacia el host y ahora se ejecuta con
+   `gunicorn Tienda.wsgi:application`.
+4. Se añadió el servicio `nginx`, que es el único que publica un puerto hacia el
+   host (`80:80`).
+5. `TUTORIAL_NUMERO=5` separa las nuevas transacciones en
+   `pagos_tutorial05_MIRAL.log`.
+6. La configuración se validó localmente con tres contenedores activos: `db`,
+   `web` y `nginx`.
+7. Las 10 pruebas automatizadas pasaron dentro del contenedor de Django.
+8. `http://localhost/api/v1/comprar/` respondió a través de Nginx y el acceso
+   directo a `http://localhost:8000/` fue rechazado.
+
+Las tres capturas de AWS requeridas por el tutorial 5 se documentan en
+`entregas/tutorial05_evidencia.md`.

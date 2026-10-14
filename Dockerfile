@@ -15,6 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 5. Copiamos el código fuente.
 COPY . /app/
 
-# 6. Puerto y comando por defecto del servidor de desarrollo del laboratorio.
+# 6. Puerto interno y servidor WSGI para producción.
 EXPOSE 8000
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "Tienda.wsgi:application", "--bind", "0.0.0.0:8000"]
