@@ -1,0 +1,36 @@
+{
+  "entorno": "Docker Compose local",
+  "servicios": {
+    "db": "PostgreSQL 15 healthy",
+    "web": "Django 5.2.8 en 0.0.0.0:8000"
+  },
+  "solicitudes": [{
+    "metodo": "POST",
+    "ruta": "/api/v1/comprar/",
+    "payload": {
+      "libro_id": 1,
+      "direccion_envio": "AWS Academy",
+      "cantidad": 1
+    },
+    "status": 201,
+    "estado": "exito",
+    "mensaje": "Orden creada. Total: 142.80",
+    "inventario_anterior": 5,
+    "inventario_nuevo": 4
+  }, {
+    "metodo": "POST",
+    "ruta": "/api/v1/comprar/",
+    "payload": {
+      "libro_id": 1,
+      "direccion_envio": "Docker Local",
+      "cantidad": 1
+    },
+    "status": 201,
+    "estado": "exito",
+    "mensaje": "Orden creada. Total: 142.80",
+    "inventario_anterior": 4,
+    "inventario_nuevo": 3,
+    "captura": "captura_tutorial04_docker_local.png"
+  }],
+  "archivo_log": "pagos_tutorial04_MIRAL.log"
+}

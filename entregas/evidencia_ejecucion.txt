@@ -1,0 +1,51 @@
+Tutorial 01 - tres compras con BancoNacionalProcesador
+Archivo: pagos_tutorial01_MIRAL.log
+
+BANCO: Clean Code en Python -> 178.5 COP
+BANCO: Arquitectura Limpia -> 297.5 COP
+BANCO: Patrones de Diseno -> 214.2 COP
+
+Log generado:
+[2026-10-14 11:32:54.700515] Transaccion exitosa por: $178.5
+[2026-10-14 11:32:54.716026] Transaccion exitosa por: $297.5
+[2026-10-14 11:32:54.731940] Transaccion exitosa por: $214.2
+
+Tutorial 02 - selección configurable de la Factory
+
+[DEBUG] Mock Payment: Procesando pago de $178.5 sin cargo real.
+MOCK: compra procesada -> 178.5 COP
+
+Estado final de los datos de prueba:
+INVENTARIO: Clean Code en Python=7, Arquitectura Limpia=9,
+Patrones de Diseno=9
+ORDENES: 5
+
+Verificación mediante servidor Django y vista HTTP:
+GET /compra/2/ -> 200, libro visible
+POST /compra/2/ -> 200, mensaje de compra exitosa
+[DEBUG] Mock Payment: Procesando pago de $178.5 sin cargo real.
+
+Tutorial 03 - compra REST con Django REST Framework
+Archivo: pagos_tutorial03_MIRAL.log
+
+POST /api/v1/comprar/
+Payload: {"libro_id":2,"direccion_envio":"Calle Evidencia Inventario","cantidad":1}
+Respuesta: 201 Created
+Body: {"estado":"exito","mensaje":"Orden creada. Total: 178.5"}
+
+Inventario antes: Clean Code en Python=7
+Inventario despues: Clean Code en Python=6
+GET /compra/2/ -> 200, Stock disponible=6
+
+Log generado:
+[2026-10-14 11:57:03.265057] Transaccion exitosa por: $178.5 | Libro: 2 - Clean Code en Python | Inventario: 7 -> 6
+[2026-10-14 11:58:36.296294] Transaccion exitosa por: $214.2 | Libro: 4 - Patrones de Diseno | Inventario: 8 -> 7
+
+Captura de la interfaz navegable de DRF:
+entregas/captura_tutorial03_drf.png
+La captura muestra HTTP 201 Created y el mensaje
+"Orden creada. Total: 214.2".
+
+Captura de inventario desde la vista HTML:
+entregas/captura_tutorial03_inventario_html.png
+La captura muestra Stock disponible: 6 después de la compra por API.

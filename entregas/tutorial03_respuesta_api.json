@@ -1,0 +1,36 @@
+{
+  "solicitudes": [{
+    "metodo": "POST",
+    "ruta": "/api/v1/comprar/",
+    "payload": {
+      "libro_id": 2,
+      "direccion_envio": "Calle Evidencia Inventario",
+      "cantidad": 1
+    },
+    "status": 201,
+    "estado": "exito",
+    "mensaje": "Orden creada. Total: 178.5",
+    "inventario_anterior": 7,
+    "inventario_nuevo": 6
+  }, {
+    "metodo": "POST",
+    "ruta": "/api/v1/comprar/",
+    "payload": {
+      "libro_id": 4,
+      "direccion_envio": "Calle Evidencia Actualizada",
+      "cantidad": 1
+    },
+    "status": 201,
+    "estado": "exito",
+    "mensaje": "Orden creada. Total: 214.2",
+    "inventario_anterior": 8,
+    "inventario_nuevo": 7
+  }],
+  "verificacion_html": {
+    "ruta": "/compra/2/",
+    "status": 200,
+    "stock_visible": 6,
+    "captura": "captura_tutorial03_inventario_html.png"
+  },
+  "archivo_log": "pagos_tutorial03_MIRAL.log"
+}

@@ -1,42 +1,57 @@
 from django.shortcuts import get_object_or_404
-from .models import Libro, Inventario, Orden
+from django.db import transaction
+
+from .domain.builders import OrdenBuilder
 from .domain.logic import CalculadorImpuestos
+from .models import Inventario, Libro
+
 
 class CompraService:
-    """
-    SERVICE LAYER: Orquesta la interacción entre el dominio, 
-    la infraestructura y la base de datos.
-    """
     def __init__(self, procesador_pago):
-        # Inyectamos la dependencia (DIP)
         self.procesador_pago = procesador_pago
+        self.builder = OrdenBuilder()
 
     def obtener_detalle_producto(self, libro_id):
         libro = get_object_or_404(Libro, id=libro_id)
+        inventario = get_object_or_404(Inventario, libro=libro)
         total = CalculadorImpuestos.obtener_total_con_iva(libro.precio)
-        return {"libro": libro, "total": total}
+        return {
+            "libro": libro,
+            "total": total,
+            "stock": inventario.cantidad,
+        }
 
-    def ejecutar_compra(self, libro_id, cantidad):
-        # 1. Obtener datos
+    @transaction.atomic
+    def ejecutar_compra(self, libro_id, cantidad=1, direccion="", usuario=None):
         libro = get_object_or_404(Libro, id=libro_id)
-        inv = get_object_or_404(Inventario, libro=libro)
+        inventario = get_object_or_404(
+            Inventario.objects.select_for_update(),
+            libro=libro,
+        )
 
-        # 2. Validar Reglas de Negocio
-        if inv.cantidad < cantidad:
+        if inventario.cantidad < cantidad:
             raise ValueError("No hay suficiente stock para completar la compra.")
 
-        total = CalculadorImpuestos.obtener_total_con_iva(libro.precio)
+        orden = (
+            self.builder
+            .con_usuario(usuario)
+            .con_libro(libro)
+            .con_cantidad(cantidad)
+            .para_envio(direccion)
+            .build()
+        )
 
-        # 3. Procesar Infraestructura (Pago)
-        pago_exitoso = self.procesador_pago.pagar(total)
-        
-        if not pago_exitoso:
+        inventario_anterior = inventario.cantidad
+        inventario.cantidad -= cantidad
+        inventario.save(update_fields=["cantidad"])
+
+        contexto_pago = {
+            "libro_id": libro.id,
+            "titulo": libro.titulo,
+            "inventario_anterior": inventario_anterior,
+            "inventario_nuevo": inventario.cantidad,
+        }
+        if not self.procesador_pago.pagar(orden.total, contexto=contexto_pago):
             raise Exception("La transacción fue rechazada por el banco.")
 
-        # 4. Persistencia de efectos secundarios
-        inv.cantidad -= cantidad
-        inv.save()
-        
-        Orden.objects.create(libro=libro, total=total)
-        
-        return total
+        return orden.total

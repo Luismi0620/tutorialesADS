@@ -6,5 +6,5 @@ class ProcesadorPago(ABC):
     Definimos el CONTRATO que cualquier banco debe seguir.
     """
     @abstractmethod
-    def pagar(self, monto: float) -> bool:
+    def pagar(self, monto: float, contexto=None) -> bool:
         pass
