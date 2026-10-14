@@ -13,7 +13,7 @@ services:
       timeout: 5s
       retries: 10
 
-  web:
+  web_django:
     build: .
     command: >-
       sh -c "python manage.py migrate &&
@@ -30,7 +30,12 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - ALLOWED_HOSTS=*
-      - TUTORIAL_NUMERO=5
+      - TUTORIAL_NUMERO=6
+
+  pagos_flask:
+    build: ./microservicio_pagos
+    ports:
+      - "5000:5000"
 
   nginx:
     image: nginx:1.25-alpine
@@ -39,7 +44,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
-      - web
+      - web_django
+      - pagos_flask
 
 volumes:
   postgres_data:

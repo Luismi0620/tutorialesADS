@@ -1,4 +1,4 @@
-# Ejecución de los tutoriales 01 al 05
+# Ejecución de los tutoriales 01 al 06
 
 Este proyecto se clonó en una carpeta nueva y se trabajó en la rama
 `tutoriales-completados`, partiendo del primer commit del repositorio para evitar las
@@ -113,3 +113,23 @@ Los logs quedan separados por tutorial:
 
 Las tres capturas de AWS requeridas por el tutorial 5 se documentan en
 `entregas/tutorial05_evidencia.md`.
+
+## Tutorial 06 - Primer estrangulamiento con Flask
+
+1. Se creó `microservicio_pagos/app.py` con el endpoint independiente
+   `POST /api/v2/comprar`.
+2. El microservicio se dockerizó con Python Alpine y Gunicorn.
+3. Django conserva la API v1 y ahora expone `GET /api/v1/productos/` para la
+   prueba de coexistencia requerida.
+4. Docker Compose orquesta cuatro servicios: `db`, `web_django`,
+   `pagos_flask` y `nginx`.
+5. Nginx dirige `/api/v1/` al monolito Django en el puerto interno 8000 y
+   `/api/v2/comprar` al microservicio Flask en el puerto interno 5000.
+6. El formato de acceso de Nginx registra `upstream` y `upstream_status` para
+   demostrar qué backend atendió cada solicitud.
+7. Pasaron 11 pruebas de Django y 2 pruebas del microservicio Flask.
+8. La prueba local obtuvo `200 OK` tanto para la lista v1 como para la compra
+   v2; los logs mostraron upstreams diferentes (`:8000` y `:5000`).
+
+Las evidencias requeridas para AWS se detallan en
+`entregas/tutorial06_evidencia.md`.

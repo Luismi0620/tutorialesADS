@@ -147,4 +147,12 @@ class CompraAPITests(TestCase):
         self.assertEqual(respuesta.status_code, 409)
         self.assertIn("stock", respuesta.json()["error"])
 
+    def test_api_lista_productos_desde_django_v1(self):
+        respuesta = self.client.get("/api/v1/productos/")
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(len(respuesta.json()), 1)
+        self.assertEqual(respuesta.json()[0]["titulo"], "API Design")
+        self.assertEqual(respuesta.json()[0]["stock_actual"], 3)
+
 # Create your tests here.
